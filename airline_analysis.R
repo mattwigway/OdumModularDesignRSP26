@@ -28,13 +28,13 @@ data = left_join(data, rename(carriers, TicketingCarrierName="Description"), by=
 
 # Now, we can compute the market shares
 
-mkt_shares = group_by(data, OperatingCarrierName, OriginCity) %>%
-  summarize(Passengers=sum(Passengers)) %>%
-  group_by(OriginCity) %>%
-  mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) %>%
+mkt_shares = group_by(data, OperatingCarrierName, OriginCity) |>
+  summarize(Passengers=sum(Passengers)) |>
+  group_by(OriginCity) |>
+  mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) |>
   ungroup()
 
-filter(mkt_shares, total_passengers > 1000) %>% arrange(-market_share)
+filter(mkt_shares, total_passengers > 1000) |> arrange(-market_share)
 
 # many of the smaller airlines actually operate regional aircraft for larger carriers
 # For instance, PSA Airlines flies small aircraft for American Airlines, branded as
@@ -42,12 +42,12 @@ filter(mkt_shares, total_passengers > 1000) %>% arrange(-market_share)
 # Here, we repeat the analysis using the TicketingCarrierName instead of the
 # OperatingCarrierName.
 
-ticketing_mkt_shares = group_by(data, TicketingCarrierName, OriginCity) %>%
-  summarize(Passengers=sum(Passengers)) %>%
-  group_by(OriginCity) %>%
-  mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) %>%
+ticketing_mkt_shares = group_by(data, TicketingCarrierName, OriginCity) |>
+  summarize(Passengers=sum(Passengers)) |>
+  group_by(OriginCity) |>
+  mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) |>
   ungroup()
 
-filter(ticketing_mkt_shares, total_passengers > 1000) %>% arrange(-market_share)
+filter(ticketing_mkt_shares, total_passengers > 1000) |> arrange(-market_share)
 
 # American is much more dominant in Charlotte than before, for example
