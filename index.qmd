@@ -1,0 +1,7 @@
+---
+title: Odum Institute - Modular Design with R
+author: Matt Bhagat-Conway
+---
+
+- [Slides](slides/)
+- [Example code](https://github.com/mattwigway/odum-modular-design-r)

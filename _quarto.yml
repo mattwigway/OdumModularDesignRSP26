@@ -1,4 +1,5 @@
 project:
   render:
     - index.qmd
-  output-dir: ../docs
+    - slides/index.qmd
+  output-dir: docs
