@@ -9,7 +9,7 @@ library(tidyverse)
 data = read_csv("data/air_sample.csv")
 
 # I always like to look at a sample of my data to see what I'm dealing with
-data[1:10,]
+data[1:10, ]
 
 # The data have seven columns: origin and destination airport, origin and destination cities
 # carrier, and distance. The city and carrier are coded, so we will merge in other data
@@ -19,19 +19,20 @@ data[1:10,]
 # names)
 
 market_ids = read_csv("data/L_CITY_MARKET_ID.csv")
-data = left_join(data, rename(market_ids, OriginCity="Description"), by=c(OriginCityMarketID="Code"))
-data = left_join(data, rename(market_ids, DestCity="Description"), by=c(DestCityMarketID="Code"))
+data = left_join(data, rename(market_ids, OriginCity = "Description"), by = c(OriginCityMarketID = "Code"))
+data = left_join(data, rename(market_ids, DestCity = "Description"), by = c(DestCityMarketID = "Code"))
 
 carriers = read_csv("data/L_CARRIERS.csv")
-data = left_join(data, rename(carriers, OperatingCarrierName="Description"), by=c(OpCarrier="Code"))
-data = left_join(data, rename(carriers, TicketingCarrierName="Description"), by=c(TkCarrier="Code"))
+data = left_join(data, rename(carriers, OperatingCarrierName = "Description"), by = c(OpCarrier = "Code"))
+data = left_join(data, rename(carriers, TicketingCarrierName = "Description"), by = c(TkCarrier = "Code"))
 
 # Now, we can compute the market shares
 
-mkt_shares = group_by(data, OperatingCarrierName, OriginCity) |>
-  summarize(Passengers=sum(Passengers)) |>
+mkt_shares = data |>
+  group_by(OperatingCarrierName, OriginCity) |>
+  summarize(Passengers = sum(Passengers)) |>
   group_by(OriginCity) |>
-  mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) |>
+  mutate(market_share = Passengers / sum(Passengers), total_passengers = sum(Passengers)) |>
   ungroup()
 
 filter(mkt_shares, total_passengers > 1000) |> arrange(-market_share)
@@ -42,10 +43,11 @@ filter(mkt_shares, total_passengers > 1000) |> arrange(-market_share)
 # Here, we repeat the analysis using the TicketingCarrierName instead of the
 # OperatingCarrierName.
 
-ticketing_mkt_shares = group_by(data, TicketingCarrierName, OriginCity) |>
-  summarize(Passengers=sum(Passengers)) |>
+ticketing_mkt_shares = data |>
+  group_by(TicketingCarrierName, OriginCity) |>
+  summarize(Passengers = sum(Passengers)) |>
   group_by(OriginCity) |>
-  mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) |>
+  mutate(market_share = Passengers / sum(Passengers), total_passengers = sum(Passengers)) |>
   ungroup()
 
 filter(ticketing_mkt_shares, total_passengers > 1000) |> arrange(-market_share)
