@@ -6,7 +6,7 @@ format:
         theme: [default, unc.scss]
         width: 1920
         height: 1080
-        logo: UNC_logo_RGB.png
+        logo: unc_logo.svg
         slide-number: true
         footer: "https://go.unc.edu/modulardesign"
 execute:
@@ -143,7 +143,7 @@ calculate_cylinder_volume(1, 2)
 
 ```{r}
 #| output: false
-pairs = group_by(data, Origin, Dest) %>% summarize(Passengers=sum(Passengers),
+pairs = group_by(data, Origin, Dest) |> summarize(Passengers=sum(Passengers),
     distance_km=first(Distance) * 1.609)
 arrange(pairs, -Passengers)
 
@@ -151,7 +151,7 @@ pairs = mutate(pairs,
     airport1 = if_else(Origin < Dest, Origin, Dest),
     airport2 = if_else(Origin < Dest, Dest, Origin)
     )
-pairs = group_by(pairs, airport1, airport2) %>% summarize(
+pairs = group_by(pairs, airport1, airport2) |> summarize(
     Passengers=sum(Passengers),
     distance_km=first(distance_km)
 )
@@ -166,7 +166,7 @@ arrange(pairs, -Passengers)
 ```{r}
 #| output: false
 busiest_routes = function () {
-    pairs = group_by(data, Origin, Dest) %>% summarize(Passengers=sum(Passengers),
+    pairs = group_by(data, Origin, Dest) |> summarize(Passengers=sum(Passengers),
         distance_km=first(Distance) * 1.609)
     arrange(pairs, -Passengers)
 
@@ -174,7 +174,7 @@ busiest_routes = function () {
         airport1 = if_else(Origin < Dest, Origin, Dest),
         airport2 = if_else(Origin < Dest, Dest, Origin)
         )
-    pairs = group_by(pairs, airport1, airport2) %>% summarize(
+    pairs = group_by(pairs, airport1, airport2) |> summarize(
         Passengers=sum(Passengers),
         distance_km=first(distance_km)
     )
@@ -202,7 +202,7 @@ busiest_routes()
 ```{r}
 #| output: false
 busiest_routes = function (dataframe, origcol, destcol) {
-    pairs = group_by(dataframe, origcol, destcol) %>% summarize(Passengers=sum(Passengers),
+    pairs = group_by(dataframe, origcol, destcol) |> summarize(Passengers=sum(Passengers),
         distance_km=first(Distance) * 1.609)
     arrange(pairs, -Passengers)
 
@@ -210,7 +210,7 @@ busiest_routes = function (dataframe, origcol, destcol) {
         airport1 = if_else(origcol < destcol, origcol, destcol),
         airport2 = if_else(origcol < destcol, destcol, origcol)
         )
-    pairs = group_by(pairs, airport1, airport2) %>% summarize(
+    pairs = group_by(pairs, airport1, airport2) |> summarize(
         Passengers=sum(Passengers),
         distance_km=first(distance_km)
     )
@@ -239,7 +239,7 @@ busiest_routes(data, Origin, Dest)
 ```{r}
 #| output: false
 busiest_routes = function (dataframe, origcol, destcol) {
-    pairs = group_by(dataframe, {{ origcol }}, {{ destcol }}) %>% summarize(Passengers=sum(Passengers),
+    pairs = group_by(dataframe, {{ origcol }}, {{ destcol }}) |> summarize(Passengers=sum(Passengers),
         distance_km=first(Distance) * 1.609)
     arrange(pairs, -Passengers)
 
@@ -247,7 +247,7 @@ busiest_routes = function (dataframe, origcol, destcol) {
         airport1 = if_else({{ origcol }} < {{ destcol }}, {{ origcol }}, {{ destcol }}),
         airport2 = if_else({{ origcol }} < {{ destcol }}, {{ destcol }}, {{ origcol }})
         )
-    pairs = group_by(pairs, airport1, airport2) %>% summarize(
+    pairs = group_by(pairs, airport1, airport2) |> summarize(
         Passengers=sum(Passengers),
         distance_km=first(distance_km)
     )
@@ -274,7 +274,7 @@ busiest_routes(data, OriginCity, DestCity)
 #| output: false
 
 busiest_routes = function (dataframe, origcol, destcol) {
-    pairs = group_by(dataframe, {{ origcol }}, {{ destcol }}) %>% summarize(Passengers=sum(Passengers),
+    pairs = group_by(dataframe, {{ origcol }}, {{ destcol }}) |> summarize(Passengers=sum(Passengers),
         distance_km=first(Distance) * 1.609)
     arrange(pairs, -Passengers)
 
@@ -282,7 +282,7 @@ busiest_routes = function (dataframe, origcol, destcol) {
         airport1 = if_else({{ origcol }} < {{ destcol }}, {{ origcol }}, {{ destcol }}),
         airport2 = if_else({{ origcol }} < {{ destcol }}, {{ destcol }}, {{ origcol }})
         )
-    pairs = group_by(pairs, airport1, airport2) %>% summarize(
+    pairs = group_by(pairs, airport1, airport2) |> summarize(
         Passengers=sum(Passengers),
         distance_km=first(distance_km)
     )
@@ -304,13 +304,13 @@ busiest_routes(data, OriginCity, DestCity)
 
 ```{r}
 market_shares = function (dataframe, carrier, city) {
-  mkt_shares = group_by(dataframe, {{ carrier }}, {{ city }}) %>%
-    summarize(Passengers=sum(Passengers)) %>%
-    group_by({{ city }}) %>%
-    mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) %>%
+  mkt_shares = group_by(dataframe, {{ carrier }}, {{ city }}) |>
+    summarize(Passengers=sum(Passengers)) |>
+    group_by({{ city }}) |>
+    mutate(market_share=Passengers/sum(Passengers), total_passengers=sum(Passengers)) |>
     ungroup()
 
-  res = filter(mkt_shares, total_passengers > 1000) %>% arrange(-market_share)
+  res = filter(mkt_shares, total_passengers > 1000) |> arrange(-market_share)
   return(res)
 }
 
@@ -380,14 +380,14 @@ stopifnot(all(!is.na(dataframe$Passengers)))
 busiest_routes = function (dataframe, origcol, destcol) {
   stopifnot(all(dataframe$Passengers >= 1))
   stopifnot(all(!is.na(dataframe$Passengers)))
-  pairs = group_by(dataframe, {{ origcol }}, {{ destcol }}) %>% summarize(Passengers=sum(Passengers), distance_km=first(Distance) * KILOMETERS_PER_MILE)
+  pairs = group_by(dataframe, {{ origcol }}, {{ destcol }}) |> summarize(Passengers=sum(Passengers), distance_km=first(Distance) * KILOMETERS_PER_MILE)
   arrange(pairs, -Passengers)
   
   # we see that LAX-JFK (Los Angeles to New York Kennedy) is represented separately
   # from JFK-LAX. We'd like to combine these two. Create airport1 and airport2 fields
   # with the first and second airport in alphabetical order.
   pairs = mutate(pairs, airport1 = if_else({{ origcol }} < {{ destcol }}, {{ origcol }}, {{ destcol }}), airport2 = if_else({{ origcol }} < {{ destcol }}, {{ destcol }}, {{ origcol }}))
-  pairs = group_by(pairs, airport1, airport2) %>% summarize(Passengers=sum(Passengers), distance_km=first(distance_km))
+  pairs = group_by(pairs, airport1, airport2) |> summarize(Passengers=sum(Passengers), distance_km=first(distance_km))
   return(arrange(pairs, -Passengers))
 }
 ```
@@ -399,66 +399,6 @@ busiest_routes = function (dataframe, origcol, destcol) {
 busiest_routes(mutate(data, Passengers=-1), Origin, Dest)
 ```
 
-## Using functions in multiple files
-
-- Often we may want to use functions in multiple files
-- For instance, we use the same data loading code in both `air_analysis.R` and `airline_analysis.R`
-- The simplest way is to put the functions in another file, and use `source()` to load them
-- `source()` will run the code in a file and make all of the functions and variables available
-- Just as if that code was pasted into each source file
-
-## Creating a data cleaning function
-
-- Create a function that takes arguments for the file names of the dataset and the two tables that are joined to it,
-- performs the data cleaning/processing,
-- and returns the final dataset
-- Save this function to a new file in the same directory as the others
-
-## Using your data cleaning function
-
-- Delete the data loading code in each of the analysis files
-- Use the 🧹 button in RStudio to clear the data from memory
-- Add and run a line `source("filename.R")` to load your new R file
-- Call your new function like this
-
-```{r}
-#| eval: false
-data = load_data("data/air_sample.csv", "data/L_CITY_MARKET_ID.csv", "data/L_CARRIERS.csv")
-```
-
-## The finished function
-
-Yours might not look exactly the same, and that's okay
-
-```{r}
-#| output: false
-load_data = function(data_file, city_file, carrier_file) {
-    data = read_csv(data_file)
-
-    market_ids = read_csv(city_file)
-    data = left_join(data, rename(market_ids, OriginCity="Description"),
-        by=c(OriginCityMarketID="Code"))
-    data = left_join(data, rename(market_ids, DestCity="Description"),
-        by=c(DestCityMarketID="Code"))
-
-    carriers = read_csv(carrier_file)
-    data = left_join(data, rename(carriers, OperatingCarrierName="Description"),
-        by=c(OpCarrier="Code"))
-    data = left_join(data, rename(carriers, TicketingCarrierName="Description"),
-        by=c(TkCarrier="Code"))
-
-    return(data)
-}
-```
-
-```{r}
-#| include: false
-## run this just to make sure function above works
-rm(data)
-
-data = load_data("../data/air_sample.csv", "../data/L_CITY_MARKET_ID.csv", "../data/L_CARRIERS.csv")
-```
-
 ## All data manipulation should be in code
 
 - I _never_ modify original data files, and rarely save new ones
@@ -466,16 +406,78 @@ data = load_data("../data/air_sample.csv", "../data/L_CITY_MARKET_ID.csv", "../d
 - I run that function to load the data each time
 - This way I can always see what has been done to data
 
+## Avoiding absolute file paths
+
+- Often, R code will include something like
+    ```r
+    read_csv("C:/Users/mwbc/Documents/Analysis/NHTS_2022/trips.csv")
+    ```
+- or
+    ```r
+    setwd("C:/Users/mwbc/Documents/Analysis/NHTS_2022")
+    ```
+- These are both fragile; if you share the code with someone else they won't work
+- We want to avoid absolute file paths at all times
+
+## Avoiding absolute file paths: data in same directory
+
+- If you data is in the same directory as your code (or a subdirectory), the `here` package is your friend
+- `here::here("data/inputs.csv")` will find the "inputs.csv" file in the data subdirectory of your project, regardless of where the R script is saved
+
+## Avoiding absolute paths: data in different directory
+
+- If your data is in a different directory, you can use a `.Renviron` file to specify a file path
+- Let's create a `.Renviron` file in our package
+- Add to the file
+
+```
+DATA_PATH="path/to/odum-modular-design-r/data"
+```
+
+## Accessing the directory
+
+- Within R, you can get the data path from `.Renviron` with `Sys.getenv("DATA_PATH")`
+- At the top of my script I usually have something like
+    ```r
+    DATA_PATH = Sys.getenv("DATA_PATH")
+    ```
+- Whenever I read a file, I have
+    ```r
+    data = read_csv(file.path(DATA_PATH, "file_name.csv"))
+    ```
+
+## Using .Renviron in a team
+
+- This is particularly useful when working with a team
+- _Don't_ check `.Renviron` into version control
+    - Better yet, add it to `.gitignore`
+- Each team member creates their own `.Renviron` with where the data is _on their computer_
+- All the other scripts work on everyone's computer without modification
+- I often create a `.Renviron.template` that I check in to version control to show folks what variable(s) need to be set
+    - Setting up on a new computer: copy `.Renviron.template` to `.Renviron` and edit the included paths
+
+## Using functions in multiple files
+
+- Often we may want to use functions in multiple files
+- The best way to do this is to create a _package_
+- You've used lots of packages in R - anytime you use `library()` you're loading a package
+
+
 ## Creating R packages
 
 - You use packages all the time when you use R
     - Any time you run `library(...)` you're loading a package
-- You can also create packages yourself
+- Creating your own package is very simple, once you know how to do it
+- I structure almost every analysis I do as a package - anything more complicated than a single script
+    - [A recent paper](https://github.com/mattwigway/BetweennessCentralityResilience/)
+    - [A package designed for reading transit data](github.com/mattwigway/gtfsrealtime-r)
+- R packages are great for sharing code with others, but I use them even on solo projects
 
 ## Advantages of creating a package
 
-- Easy to share code, even between projects (no copying .R files to load with `source()`)
-- Packages facilitate automated testing
+- Allow sharing code between analysis files
+- Facilitate automated testing
+- Facilitate versioning
 
 ## Creating an R package
 
@@ -550,6 +552,58 @@ create_package("~/git/airlinestats")
     - Code that is not in functions will be run when the package is compiled or installed, not when it is used
     - Main exception is constants
 
+## Creating a data cleaning function
+
+- Create a function that takes arguments for the file names of the dataset and the two tables that are joined to it,
+- performs the data cleaning/processing,
+- and returns the final dataset
+- Save this function to a new file in the same directory as the others
+
+## Using your data cleaning function
+
+- Delete the data loading code in each of the analysis files
+- Use the 🧹 button in RStudio to clear the data from memory
+- Add and run a line `source("filename.R")` to load your new R file
+- Call your new function like this
+
+```{r}
+#| eval: false
+data = load_data("data/air_sample.csv", "data/L_CITY_MARKET_ID.csv", "data/L_CARRIERS.csv")
+```
+
+## The finished function
+
+Yours might not look exactly the same, and that's okay
+
+```{r}
+#| output: false
+load_data = function(data_file, city_file, carrier_file) {
+    data = read_csv(data_file)
+
+    market_ids = read_csv(city_file)
+    data = left_join(data, rename(market_ids, OriginCity="Description"),
+        by=c(OriginCityMarketID="Code"))
+    data = left_join(data, rename(market_ids, DestCity="Description"),
+        by=c(DestCityMarketID="Code"))
+
+    carriers = read_csv(carrier_file)
+    data = left_join(data, rename(carriers, OperatingCarrierName="Description"),
+        by=c(OpCarrier="Code"))
+    data = left_join(data, rename(carriers, TicketingCarrierName="Description"),
+        by=c(TkCarrier="Code"))
+
+    return(data)
+}
+```
+
+```{r}
+#| include: false
+## run this just to make sure function above works
+rm(data)
+
+data = load_data("../data/air_sample.csv", "../data/L_CITY_MARKET_ID.csv", "../data/L_CARRIERS.csv")
+```
+
 ## Adding R code to your `airlinestats` package
 
 - Create three `.R` files, `load.R`, `analysis.R`, and `constants.R`
@@ -562,14 +616,12 @@ create_package("~/git/airlinestats")
 
 ## Loading your package
 
-- During development, you can load your package with `load_all()`
+- During development, you can load your package with `devtools::load_all()`
 - This will reload the latest version of all of your R code
-- `load_all` is from `devtools`, so you have to load that first
 
 ```{r}
 #| eval: false
-library(devtools)
-load_all()
+devtools::load_all()
 ```
 
 ## Using your package
@@ -579,10 +631,11 @@ load_all()
 
 ```{r}
 #| eval: false
+DATA_PATH = Sys.getenv("DATA_PATH")
 data = load_data(
-    "../odum-modular-design/data/air_sample.csv",
-    "../odum-modular-design/data/L_CITY_MARKET_ID.csv",
-    "../odum-modular-design/data/L_CARRIERS.csv"
+    file.path("air_sample.csv"),
+    file.path("L_CITY_MARKET_ID.csv"),
+    file.path("L_CARRIERS.csv")
 )
 ```
 
@@ -607,6 +660,7 @@ data = load_data(
 ## Fully qualified notation
 
 - We tell R that we want to use functions from the libraries `readr` and `dplyr` by running `use_package()`
+- This ensures that these packages are listed as _dependencies_, so when we tell R to install the package it ensures these are installed as well.
 - Do this, and run `load_all` again, and confirm that `load_data` now works
 
 ```{r}
@@ -618,8 +672,9 @@ use_package("dplyr")
 ## Using `tidyverse` functionality
 
 - `tidyverse` is a collection of many packages
-- Using `tidyverse` directly in libraries is discourages
+- Using `tidyverse` directly in libraries [is discouraged](https://tidyverse.org/blog/2018/06/tidyverse-not-for-packages/)
 - Most data manipulation functions are from `dplyr`, data reading functions from `readr`
+- Loading `tidyverse` in the console and running `?function` will tell you what constituent package it comes from
 
 ## `@importFrom`
 
@@ -629,12 +684,10 @@ use_package("dplyr")
 ## `@importFrom`
 
 - Let's import `summarize`, `group_by`, `mutate`, `first`, `if_else`, `arrange`, `ungroup`, `filter` and `summarize` from `dplyr` to make our analysis code work
-- We alse need to import `%>%` from `magrittr`
 
 ```{r}
 #| eval: false
 use_import_from("dplyr", c("summarize", "group_by", "mutate", "first", "if_else", "filter", "ungroup", "arrange", "summarize"))
-use_import_from("magrittr", "%>%")
 ```
 
 - Accept the prompt to generate package documentation
@@ -693,8 +746,9 @@ check()
 
 - `Non-standard license specification`
     - R is suggesting you fill out the `DESCRIPTION` file, which includes choosing a license. We'll skip this for now.
-- `No visible branding` and `undefined global`
+- `No visible binding` and `undefined global`
     - These are the columns of our data; R doesn't know this when checking the code, though, and warns that they may be undefined
+    - This is fine for packages used internally; for packages you are planning to publish you often wouldn't want to assume certain columns were in the data
 
 ## Installing the package
 
@@ -710,7 +764,12 @@ check()
 ```{r}
 #| eval: false
 library(airlinestats)
-data = load_data("data/air_sample.csv", "data/L_CITY_MARKET_ID.csv", "data/L_CARRIERS.csv")
+DATA_PATH = Sys.getenv("DATA_PATH")
+data = load_data(
+    file.path("air_sample.csv"),
+    file.path("L_CITY_MARKET_ID.csv"),
+    file.path("L_CARRIERS.csv")
+)
 busiest_routes(data, Origin, Dest)
 busiest_routes(data, OriginCity, DestCity)
 ```
@@ -728,7 +787,7 @@ Error in load_data("data/air_sample.csv", "data/L_CARRIERS.csv", "data/L_CITY_MA
 - This allows you to have functions used only internally
 - We mark a function to be exported by adding a comment above the function definition
 ```{r}
-##' @export
+#' @export
 ```
 - Mark all three functions exported
 
@@ -757,55 +816,6 @@ Error in load_data("data/air_sample.csv", "data/L_CARRIERS.csv", "data/L_CITY_MA
 
 - Re-run the code using your package; it should work now
 - You may have to restart R
-
-## Avoiding absolute file paths
-
-- Often, R code will include something like
-    ```r
-    read_csv("C:/Users/mwbc/Documents/Analysis/NHTS_2022/trips.csv")
-    ```
-- or
-    ```r
-    setwd("C:/Users/mwbc/Documents/Analysis/NHTS_2022")
-    ```
-- These are both fragile; if you share the code with someone else they won't work
-- We want to avoid absolute file paths at all times
-
-## Avoiding absolute file paths: data in same directory
-
-- If you data is in the same directory as your code (or a subdirectory), the `here` package is your friend
-- `here::here("data/inputs.csv")` will find the "inputs.csv" file in the data subdirectory of your project, regardless of where the R script is saved
-
-## Avoiding absolute paths: data in different directory
-
-- If your data is in a different directory, you can use a `.Renviron` file to specify a file path
-- Let's create a `.Renviron` file in our package
-- Add to the file
-
-```
-DATA_PATH="path/to/odum-modular-design-r/data"
-```
-
-## Accessing the directory
-
-- Within R, you can get the data path from `.Renviron` with `Sys.getenv("DATA_PATH")`
-- At the top of my script I usually have something like
-    ```r
-    DATA_PATH = Sys.getenv("DATA_PATH")
-    ```
-- Whenever I read a file, I have
-    ```r
-    data = read_csv(file.path(DATA_PATH, "file_name.csv"))
-    ```
-
-## Using .Renviron in a team
-
-- This is particularly useful when working with a team
-- _Don't_ check `.Renviron` into version control
-- Each team member creates their own `.Renviron` with where the data is _on their computer_
-- All the other scripts work on everyone's computer without modification
-- I often create a `.Renviron.template` that I check in to version control to show folks what variable(s) need to be set
-    - Setting up on a new computer: copy `.Renviron.template` to `.Renviron` and edit the included paths
 
 ## Automated testing
 
@@ -878,7 +888,7 @@ get_data = function () {
 test_that("Market shares sum to 1", {
   data = get_data()
   shares = market_shares(data, Carrier, Origin)
-  total_shares = group_by(shares, Origin) %>% summarize(overall=sum(market_share))
+  total_shares = group_by(shares, Origin) |> summarize(overall=sum(market_share))
   # six airports, so six shares
   expect_equal(total_shares$overall, rep(1, 6))
 })
@@ -889,7 +899,7 @@ test_that("Market shares sum to 1", {
 ```{r}
 #| eval: false
 test_that("Error when passengers column missing", {
-  data = get_data() %>% dplyr::select(-Passengers)
+  data = get_data() |> dplyr::select(-Passengers)
   expect_error(busiest_routes(data, Origin, Destination))
 })
 ```
@@ -940,18 +950,6 @@ JFK,SFO,2,2586
 - Write a test that reads the data in and tests that `busiest_routes` returns JFK->SFO as the busiest route
 - You can get the path to your `passengers.csv` file with `system.file("extdata", "passengers.csv", package="airlinestats")`
 
-## When...
-
-### to create a package
-
-- When you are building reusable functions for a large project, or several projects
-- When you want to employ automated testing
-
-### not to create a package
-
-- Simple analyses and one-off projects
-- Projects with few interdependencies and where `stopifnot` testing is sufficient
-
 ## How to use your package
 
 - Two ways to use your package: through `install` and through devtools `load_all`
@@ -959,6 +957,7 @@ JFK,SFO,2,2586
     - load with `library()`, just like any other package
 - `load_all` has advantages, though
     - Always in sync with your code - no installation step needed
+    - I usually do this with packages that support a single analysis - I keep my scripts in the same folder as the R code, and just use `devtools::load_all()` to load the package
 
 ## Writing scripts using your package
 
@@ -1110,19 +1109,10 @@ JFK,SFO,2,2586
 
 ## Collaborating with others
 
-- Anyone can run `renv::install("user/package")` and get your package
+- Anyone can run `renv::install("user/package")` and get your package, if your Github repository is public
 - If you're tagging releases, `renv::install("user/package@tag")` will get that version
 - `renv::update("packagename")` to update
     - not `user/package`, but the package name you'd put in `library()`
-
-## Using private Github repositories
-
-- Oftentimes you don't want to share your research code with the world (yet)
-- If you use a private Github repository, you need to authenticate to install packages from it
-- You'll need to create a Github _personal access token_ and put it in the environment variable `GITHUB_PAT`
-- On Github, create under Settings -> Developer -> Personal Access Tokens
-- Put `GITHUB_PAT=token` in your `~/.Renviron` file
-    - the one in your home directory, not the one in your project - you don't want to accidentally commit your access token
 
 ## Continuous integration
 
@@ -1215,70 +1205,116 @@ with:
 ## Documentation
 
 - R previously complained that we didn't have documentation for our exported functions
-- It's a good practice to document all of our externally-facing functions
+- It's a good practice to document all of our externally-facing functions (and required, if you plan to submit to CRAN)
 - The roxygen2 system allows us to do this right in our R code
 
 ## Roxygen2 comments
 
 ```{r}
-##' Compute carrier market shares by airport
-##'
-##' This function computes the market share of each carrier at each airport.
-##'
-##' The carrier and airport columns can be specified manually, so ticketing or operating
-##' carrier can be used (or another carrier column, if you had one---for instance, mainline
-##' vs regional carrier market share, or legacy vs. low-cost). The airport column is likewise
-##' an argument, so market shares per-airport, per-city, per-state, etc. can be calculated.
-##'
-##' @param dataframe data to use
-##' @param carriercol column of data frame that specifies carrier
-##' @param origincol column of data frame that specifies airport
-##'
-##' @returns dataset containing market shares by airline and airport
-##'
-##' @export
+#' Compute carrier market shares by airport
+#'
+#' This function computes the market share of each carrier at each airport, with options for determining
+#' how to determine the carrier and the airport (e.g. ticketed vs. operating, individual airport vs. metro
+#' area airport system).
+#'
+#' The carrier and airport columns can be specified manually, so ticketing or operating
+#' carrier can be used (or another carrier column, if you had one---for instance, mainline
+#' vs regional carrier market share, or legacy vs. low-cost). The airport column is likewise
+#' an argument, so market shares per-airport, per-city, per-state, etc. can be calculated.
+#'
+#' @param dataframe data to use
+#' @param carriercol column of data frame that specifies carrier
+#' @param origincol column of data frame that specifies airport
+#' 
+#' @examplesIf require("tibble")
+#' data = tibble::tribble(
+#'     ~Origin, ~Origin_City, ~Dest, ~Passengers, ~Carrier,
+#'     "LAX",   "Los Angeles", "SFO", 400,        "DL",
+#'     "LAX",   "Los Angeles", "IAD", 200,        "UA",
+#'     "LGB",   "Los Angeles", "SJC", 100,        "B6"
+#' )
+#' 
+#' # compute market shares for departures from each airport
+#' market_shares(data, Carrier, Origin)
+#' 
+#' # compute market shares for departures combing all airports in Los Angeles area
+#' market_shares(data, Carrier, Origin_City)
+#'
+#' @returns dataset containing market shares, with one row per by airline and airport
+#'
+#' @export
 ```
 
 ## Roxygen2 comment anatomy: title
 
 ```{r}
-##' Compute carrier market shares by airport
+#' Compute carrier market shares by airport
 ```
 
 ## Roxygen2 comment anatomy: description
 
 ```{r}
-##' This function computes the market share of each carrier at each airport.
+#' This function computes the market share of each carrier at each airport.
 ```
 
 ## Roxygen2 comment anatomy: details
 
 ```{r}
-##' The carrier and airport columns can be specified manually, so ticketing or operating
-##' carrier can be used (or another carrier column, if you had one---for instance, mainline
-##' vs regional carrier market share, or legacy vs. low-cost). The airport column is likewise
-##' an argument, so market shares per-airport, per-city, per-state, etc. can be calculated.
+#' The carrier and airport columns can be specified manually, so ticketing or operating
+#' carrier can be used (or another carrier column, if you had one---for instance, mainline
+#' vs regional carrier market share, or legacy vs. low-cost). The airport column is likewise
+#' an argument, so market shares per-airport, per-city, per-state, etc. can be calculated.
 ```
 
 ## Roxygen2 comment anatomy: arguments (parameters)
 
 ```{r}
-##' @param dataframe data to use
-##' @param carriercol column of data frame that specifies carrier
-##' @param origincol column of data frame that specifies airport
+#' @param dataframe data to use
+#' @param carriercol column of data frame that specifies carrier
+#' @param origincol column of data frame that specifies airport
 ```
 
 ## Roxygen2 comment anatomy: return value
 
 ```{r}
-##' @returns dataset containing market shares by airline and airport
+#' @returns dataset containing market shares by airline and airport
+```
+
+## Roxygen2 comment anatomy: examples
+
+- Everything between `@examples` and the next directive is R code for examples
+- This code will be run when building your package, so it should work...
+- If it requires packages, etc., `@examplesIf` will run the code only if whatever is immediately after `@requiresIf` is true
+- Examples must be self-contained - i.e. run without any other code (other than loading your library) needing to be run first
+
+## Roxygen2 comment anatomy: examples: example
+
+
+```{r}
+#' @examplesIf require("tibble")
+#' data = tibble::tribble(
+#'     ~Origin, ~Origin_City, ~Dest, ~Passengers, ~Carrier,
+#'     "LAX",   "Los Angeles", "SFO", 400,        "DL",
+#'     "LAX",   "Los Angeles", "IAD", 200,        "UA",
+#'     "LGB",   "Los Angeles", "SJC", 100,        "B6"
+#' )
+#' 
+#' # compute market shares for departures from each airport
+#' market_shares(data, Carrier, Origin)
+#' 
+#' # compute market shares for departures combing all airports in Los Angeles area
+#' market_shares(data, Carrier, Origin_City)
 ```
 
 ## Roxygen2 comment anatomy: export
 
 ```{r}
-##' @export
+#' @export
 ```
+
+## Other Roxygen2 directives
+
+- `@noRd` - do not show this in the user facing documentation (useful for documenting internal functions)
 
 ## Building the documentation
 
@@ -1348,7 +1384,7 @@ vignette: >
 - Include the following code in your vignette, surrounded by ` ```{r} ` and ` ``` `
 
 ```{r}
-data = dplyr::tibble(
+data = tibble::tibble(
     Origin=c("RDU", "RDU", "CLT", "CLT", "CLT"),
     OperatingCarrierName = c("Southwest", "Delta", "American", "American", "Piedmont"),
     Passengers=rep(1, 5)
@@ -1401,8 +1437,43 @@ market_shares(data, Origin, OperatingCarrierName)
 ## Vignettes and installing from Github
 
 - Vignettes are not built when installing from github, to save time
-- Best way to see vignettes is to [create a website for your package](https://r-pkgs.org/website.html)
 - Vignettes are mostly for packages you expect many others to use
+
+## Building a website for your package
+
+- The best way to distribute vignettes (and documentation) is through a [pkgdown](https://pkgdown.r-lib.org/) site
+    - For example, [this](https://projects.indicatrix.org/gtfsrealtime-r/) is the pkgdown site for one of the packages I maintain
+- The easiest way to set this up is `usethis::use_pkgdown_github_pages()`
+- This will make your pkgdown site available at `https://<username>.github.io/<package>`
+    - **This will be public even if your repository is private**
+
+## Sharing your package with the world
+
+- The easiest way to distribute your package is to just have it on Github
+- Others can install it with `renv::install` or `devtools::install_github`
+- For packages that you expect to be of broad interest, CRAN is a good option
+    - The repository that `install.packages` installs packages from
+    - Notoriously unpleasant and nitpicky
+    - Read [the book](https://r-pkgs.org/release.html) before you do this
+- For packages with compiled C/C++/Rust code, [R-universe](https://r-universe.dev/search) is a good option
+    - If you don't know what this means, you don't have compiled C/C++/Rust code
+
+## Semantic versioning
+
+- Modern open-source software across many languages is switching to a common versioning scheme known as [_semantic versioning_](https://semver.org/)
+- Version numbers are three numbers separated by periods: the major version, the minor version, and the patch version
+- The patch version is incremented when you release a new version that only contains bugfixes
+- The minor version is incremented when you release a new version with new functionality that is backwards-compatible (i.e. someone using version 1.2 can update to version 1.3 without needing to change their code)
+- The major version is incremented when you release a new version with "breaking changes" - i.e. upgrading from 1.0 to 2.0 might mean other projects need to update their code
+- For version 0.x.y, anything goes - but typically folks will increment the minor version for breaking changes and the patch for anything else
+
+## Release versions
+
+- When you release a version, it's a good idea to:
+    - Create a tag on Github (typically the tag would start with a `v`, e.g. `v1.0.0`)
+    - Create a release on Github from that tag
+    - Have a changelog describing the change (typically in NEWS.md).
+- Then people can install a specific version with `devtools::install_github("user/package@v1.0.0")` or `renv::install("user/package@v1.0.0")`
 
 ## Additional resources
 
