@@ -1,0 +1,14 @@
+# Modular Design in R
+
+This repository contains the materials for the [Odum
+Institute](https://odum.unc.edu) Modular Design with R course. The
+[slides are also
+available](https://projects.indicatrix.org/odum-modular-design-r).
+
+# Package index
+
+## All functions
+
+- [`market_shares()`](http://projects.indicatrix.org/OdumModularDesignRSP26/reference/market_shares.md)
+  : Compute market shares in an airport or city
+
