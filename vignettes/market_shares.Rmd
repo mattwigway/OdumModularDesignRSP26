@@ -1,0 +1,32 @@
+---
+title: "Market share"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Market shares}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(OdumModularDesignR)
+```
+
+In this vignette, we will discuss calculating market shares. First we need to load some data.
+
+```{r}
+file = system.file("testdata/passengers.csv", package="OdumModularDesignR")
+data = read.csv(file)
+```
+
+Next we can calculate market shares:
+
+```{r}
+busiest_routes(data, from, to)
+```
