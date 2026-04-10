@@ -12,3 +12,5 @@
 ^air_analysis\.R$
 ^airline_analysis\.R$
 ^\.github$
+^_pkgdown\.yml$
+^pkgdown$
