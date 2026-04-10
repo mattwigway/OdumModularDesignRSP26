@@ -1,5 +1,6 @@
 # Now, we can see what the most popular air route is, by summing up the number of
 # passengers carried.
+#' @export
 busiest_routes = function (dataframe, origcol, destcol) {
   stopifnot(all(dataframe$Passengers >= 1))
   stopifnot(!any(is.na(dataframe$Passengers)))

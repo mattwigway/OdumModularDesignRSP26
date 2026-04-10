@@ -1,3 +1,4 @@
+#' @export
 load_data = function (datafile, cityfile, carrierfile) {
   # first, we need to load the data
   data = readr::read_csv(datafile)
