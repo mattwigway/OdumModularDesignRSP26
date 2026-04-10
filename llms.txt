@@ -12,3 +12,9 @@ available](https://projects.indicatrix.org/odum-modular-design-r).
 - [`market_shares()`](http://projects.indicatrix.org/OdumModularDesignRSP26/reference/market_shares.md)
   : Compute market shares in an airport or city
 
+# Articles
+
+### All vignettes
+
+- [Market
+  share](http://projects.indicatrix.org/OdumModularDesignRSP26/articles/market_shares.md):
